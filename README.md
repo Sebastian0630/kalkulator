@@ -1,129 +1,209 @@
-# kalkulator
+Oczywiście, oto poprawiony kod:
 
-import math
+```python
+from random import randint, choice
 
-def kwadrat():
-    a = input("bok: ")
-    a = int(a)
-    pkwadratu = a**2
-    print("pole kwadratu to", (pkwadratu))
+# Dane bohatera
+imię = input('Podaj imię swojego bohatera: ')
+życie = 100
+mana = 100
 
-def prostokat():
-    a = input("bok1: ")
-    b = input("bok2: ")
-    a = int(a)
-    b = int(b)
-    pprostokata = a*b
-    print("pole prostokata to", (pprostokata))
+# Funkcje ataków i przywracania
+def zwykły_atak():
+    return randint(3, 10)
 
-def rownoleglobok():
-    a = input("bok1: ")
-    h = input("wysokosc: ")
-    a = int(a)
-    h = int(h)
-    prownolegloboku = a*h
-    print("pole rownolegloboku to", (prownolegloboku))
+def fire_ball():
+    global mana
+    if mana < 10:
+        print("-" * 40)
+        print("Nie masz wystarczającej ilości many!")
+        return 0
+    mana -= 10
+    return randint(13, 20)
 
-def trapez():
-    pod1 = input("podstawa1: ")
-    pod2 = input("podstawa2: ")
-    wysokosc = input("wysokosc: ")
+def lodowate_ostrze():
+    global mana
+    if mana < 15:
+        print("-" * 40)
+        print("Nie masz wystarczającej ilości many!")
+        return 0
+    mana -= 15
+    return randint(10, 15)
 
-    pod1 = int(pod1)
-    pod2 = int(pod2)
-    wysokosc = int(wysokosc)
+def uderzenie_pioruna():
+    global mana
+    if mana < 20:
+        print("-" * 40)
+        print("Nie masz wystarczającej ilości many!")
+        return 0
+    mana -= 20
+    return randint(15, 25)
 
-    podst = pod1+pod2
-    podh = podst*wysokosc
-    ptrapezu = podh/2
-    print("pole trapezu to", (ptrapezu))
+def medytacja():
+    global mana
+    przyrost_many = randint(15, 25)
+    mana += przyrost_many
+    print(f"Praktykujesz medytację i odzyskujesz {przyrost_many} many.")
+    return -(0.5 * przyrost_many)  # Zwróć ujemną wartość, aby oznaczyć, że to jest regeneracja many
 
-def trojkat():
-    a = input("podstawa: ")
-    h = input("wysokosc: ")
+def uzdrowienie():
+    global mana, życie
+    if mana < 30:
+        print("-" * 40)
+        print("Nie masz wystarczającej ilości many!")
+        return 0
+    mana -= 30
+    przyrost_zdrowia = randint(15, 25)
+    życie_po_uzdrowieniu = życie + przyrost_zdrowia
+    if życie_po_uzdrowieniu > 100:
+        przyrost_zdrowia = 100 - życie  # Przywróć tylko tyle, aby życie wynosiło 100
+    życie += przyrost_zdrowia
+    print(f"Leczysz się i odzyskujesz {przyrost_zdrowia} punktów życia.")
+    return -(0.2 * przyrost_zdrowia)
 
-    a = int(a)
-    h = int(h)
+def wybierz_atak():
+    print('a/A - Wykonaj Normalny Atak')
+    print('b/B - Fire ball!')
+    print('c/C - Lodowate ostrze!')
+    print('d/D - Uderzenie pioruna!')
+    print('m/M - Medytacja (odzyskaj manę)')
+    print('u/U - Uzdrowienie (leczenie)')
+    co = input().upper()
+    if co == 'A':
+        return zwykły_atak()
+    elif co == 'B':
+        return fire_ball()
+    elif co == 'C':
+        return lodowate_ostrze()
+    elif co == 'D':
+        return uderzenie_pioruna()
+    elif co == 'M':
+        return medytacja()
+    elif co == 'U':
+        return uzdrowienie()
+    else:
+        print("Nie wybrano akcji")
+        return 0
 
-    x = a*h
-    ptrojkata = 1/2*x
-    print("pole trojkata to", (ptrojkata))
+def wyswietl_motywacje():
+    motywacje = [
+        "Niech twoja odwaga będzie silniejsza niż strach!",
+        "Pamiętaj, że nawet najdłuższa podróż zaczyna się od jednego kroku.",
+        "Zawsze jest czas na nowy początek. Daj z siebie wszystko!",
+        "Twoja wytrwałość jest kluczem do sukcesu.",
+        "Wiem, że potrafisz! Idź na całość!",
+        "Każda porażka to lekcja. Nigdy się nie poddawaj!",
+        "Twoja siła tkwi w determinacji. Nie rezygnuj!",
+        "Zmiany zaczynają się wtedy, gdy jesteś gotów je zaakceptować.",
+        "Życie to walka, ale ty jesteś silniejszy niż myślisz!",
+        "Pamiętaj, żeby celebrować każdy mały postęp. To buduje motywację!",
+    ]
+    print(choice(motywacje))
 
-def trojkatrownoboczny():
-    a = input("bok: ")
+# Nowe funkcje - Sklep i zdobywanie poziomów
+złoto = 0
+poziom = 1
+doświadczenie = 0
 
-    a = int(a)
+def sklep():
+    global złoto, życie, mana
+    print("Witaj w sklepie!")
+    print("1. Mikstura życia (50 złota) - Przywraca 30 punktów życia.")
+    print("2. Mikstura many (50 złota) - Przywraca 30 many.")
+    print("3. Powrót do walki")
 
-    x = a**2*(math.sqrt(3))
-    poletrojkatarown = x/4
-    print("pole trojkata rownobocznego to", (poletrojkatarown))
+    wybór = input("Wybierz opcję (1/2/3): ")
 
-def kolo():
-    r = input("promien: ")
-    r = int(r)
-    pkola = math.pi*r**2
-    print("pole koła to", (pkola))
+    if wybór == '1':
+        if złoto >= 50:
+            złoto -= 50
+            życie += 30
+            print("Kupiłeś Miksturę życia! Przywrócono 30 punktów życia.")
+        else:
+            print("Nie masz wystarczającej ilości złota.")
+    elif wybór == '2':
+        if złoto >= 50:
+            złoto -= 50
+            mana += 30
+            print("Kupiłeś Miksturę many! Przywrócono 30 many.")
+        else:
+            print("Nie masz wystarczającej ilości złota.")
+    elif wybór == '3':
+        print("Powrót do walki.")
+    else:
+        print("Nieprawidłowy wybór.")
 
-def romb():
-    a = input("bok: ")
-    h = input("wysokosc: ")
+def zdobyj_doświadczenie():
+    global doświadczenie, poziom, złoto
+    doświadczenie += 20
+    złoto += 10
+    print(f"Zdobyłeś 20 punktów doświadczenia i 10 złota!")
 
-    a = int(a)
-    h = int(h)
+    if doświadczenie >= 100:
+        awans_na_poziom()
 
-    prombu = a*h
-    print("pole rombu to", (prombu))
+def awans_na_poziom():
+    global poziom, doświadczenie
+    poziom += 1
+    doświadczenie = 0
+    print(f"Gratulacje! Awansowałeś na poziom {poziom}!")
 
-def romb():
-    e = input("przekatna1: ")
-    f = input("przekatna2: ")
+Przepraszam za przerwanie. Oto reszta poprawionego kodu:
 
-    e = int(e)
-    f = int(f)
+```python
+# Funkcja losująca przeciwnika
+def losowy_przeciwnik():
+    przeciwnicy = [
+        ["Mały Goblin", 15, 3, 0],
+        ["Nimfa Wodna", 10, 3, 0],
+        ["Ognisty Smok", 30, 5, 2],
+        ["Lodowy Yeti", 25, 4, 1],
+        ["Cień Mroku", 20, 5, 3],
+        ["Gigantyczny Skorpion", 35, 6, 2],
+        ["Mędrzec Zakonu", 40, 7, 5],
+        ["Mechaniczny Golem", 50, 8, 3],
+        ["Krwawa Wiedźma", 45, 7, 4],
+        ["Zmutowany Minotaur", 55, 10, 2],
+        ["Arcymag Ciemności", 60, 12, 6],
+    ]
+    return choice(przeciwnicy)
 
-    boki = e*f 
-    polerombu = boki/2
-    print("pole rombu wynosi", (polerombu))
+# Pętla główna gry
+liczba_pokonanych_przeciwników = 0
 
-def deltoid():
-    e = input("przekatna1: ")
-    f = input("przekatna2: ")
+while życie > 0:
+    przeciwnik = losowy_przeciwnik()
+    print("-" * 40)
 
-    e = int(e)
-    f = int(f)
+    while przeciwnik[1] > 0 and życie > 0:
+        print(f"{imię} walczy teraz z {przeciwnik[0]}")
+        print(f"Przeciwnik ma {przeciwnik[1]} HP i zadaje Ci {przeciwnik[2]} obrażeń")
 
-    boki = e*f
-    poledeltoida = boki/2
-    print("pole deltoida wynosi", (poledeltoida))
+        życie -= przeciwnik[2]
+        if życie <= 0:
+            break
 
-    print("pole kwadratu - 1 | pole prostokata - 2 | pole rownolegloboku - 3 | pole trapezu - 4 | pole trojkata - 5 | pole trojkata rownobocznego - 6 | pole kola - 7 | pole rombu - 8 | pole rombu - 9 | pole deltoida - 10")
-wybor = input("wybierz numer: ")
-if wybor == "1":
-    kwadrat()
+        wyswietl_motywacje()
+        print(f"Masz {życie} HP i {mana} many")
+        atak = wybierz_atak()
 
-if wybor == "2":
-    prostokat()
+        if isinstance(atak, int):
+            przeciwnik[1] -= atak
+            print(f"Zadałeś {atak} obrażeń")
+        else:
+            mana += atak
 
-if wybor == "3":
-    rownoleglobok()
+    if przeciwnik[1] <= 0:
+        print('Zabiłeś przeciwnika!!!')
+        liczba_pokonanych_przeciwników += 1
+        zdobyj_doświadczenie()
 
-if wybor == "4":
-    trapez()
+    # Po pokonaniu przeciwnika sprawdź, czy bohater chce odwiedzić sklep
+    wybór_sklepu = input("Czy chcesz odwiedzić sklep? (tak/nie): ").lower()
+    if wybór_sklepu == 'tak':
+        sklep()
 
-if wybor == "5":
-    trojkat()
-
-if wybor == "6":
-    trojkatrownoboczny()
-
-if wybor == "7":
-    kolo()
-
-if wybor == "8":
-    romb()
-
-if wybor == "9":
-    romb()
-
-if wybor == "10":
-    deltoid()
+print("-" * 40)
+print("KONIEC GRY!")
+print(f"Zabiłeś {liczba_pokonanych_przeciwników} przeciwników na poziomie {poziom}.")
+print(f"Aktualny poziom: {poziom}, Złoto: {złoto}, Doświadczenie: {doświadczenie}")
